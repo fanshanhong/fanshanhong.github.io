@@ -96,14 +96,17 @@
 
 
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="categories">
-<meta property="og:url" content="http://yoursite.com/categories/index.html">
+  <meta name="description" content="线程同步synchronize 互斥锁（某一个时间段， 只有一个线程能够进入该方法体内）synchronize(this) 锁定当前对象， 即持有当前对象的锁对象。 也可以给方法加 synchronize 关键字， 代表在执行方法的过程中， 锁定当前对象。 sleep()方法， 睡眠过程中， 并不释放当前持有的锁。 死锁最好只锁定一个， 不要锁定多个（粒度加粗） 只读锁 只写锁 可重入锁 保护要保">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://yoursite.com/2019/05/07/Android/并发/线程同步/index.html">
 <meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="线程同步synchronize 互斥锁（某一个时间段， 只有一个线程能够进入该方法体内）synchronize(this) 锁定当前对象， 即持有当前对象的锁对象。 也可以给方法加 synchronize 关键字， 代表在执行方法的过程中， 锁定当前对象。 sleep()方法， 睡眠过程中， 并不释放当前持有的锁。 死锁最好只锁定一个， 不要锁定多个（粒度加粗） 只读锁 只写锁 可重入锁 保护要保">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-05-08T06:08:09.000Z">
+<meta property="og:updated_time" content="2019-05-07T12:11:31.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="categories">
+<meta name="twitter:title" content="Hexo">
+<meta name="twitter:description" content="线程同步synchronize 互斥锁（某一个时间段， 只有一个线程能够进入该方法体内）synchronize(this) 锁定当前对象， 即持有当前对象的锁对象。 也可以给方法加 synchronize 关键字， 代表在执行方法的过程中， 锁定当前对象。 sleep()方法， 睡眠过程中， 并不释放当前持有的锁。 死锁最好只锁定一个， 不要锁定多个（粒度加粗） 只读锁 只写锁 可重入锁 保护要保">
 
 
 
@@ -111,7 +114,7 @@
 
   
   
-  <link rel="canonical" href="http://yoursite.com/categories/">
+  <link rel="canonical" href="http://yoursite.com/2019/05/07/Android/并发/线程同步/">
 
 
 
@@ -121,7 +124,7 @@
   };
 </script>
 
-  <title>categories | Hexo</title>
+  <title> | Hexo</title>
   
 
 
@@ -241,7 +244,7 @@
         
         
           
-          <li class="menu-item menu-item-categories menu-item-active">
+          <li class="menu-item menu-item-categories">
 
     
     
@@ -300,79 +303,170 @@
           
             
 
-    
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
-
           
           <div id="content" class="content">
             
 
   <div id="posts" class="posts-expand">
     
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/07/Android/并发/线程同步/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Fan shanhong">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
     
-    
-    <div class="post-block page">
       <header class="post-header">
 
-<h1 class="post-title" itemprop="name headline">categories
-
-</h1>
-
-<div class="post-meta">
-  
-  
-
-
-
-</div>
-
-</header>
-
-      
-      
-      
-      <div class="post-body">
         
         
-          <div class="category-all-page">
-            <div class="category-all-title">
+          <h1 class="post-title" itemprop="name headline">
+
               
-              
-              No categories
-            </div>
-            <div class="category-all">
-              
-            </div>
-          </div>
+            
+          </h1>
         
-      </div>
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-05-07 20:11:31" itemprop="dateCreated datePublished" datetime="2019-05-07T20:11:31+08:00">2019-05-07</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
       
+
+      
+        <h1 id="线程同步"><a href="#线程同步" class="headerlink" title="线程同步"></a>线程同步</h1><h2 id="synchronize-互斥锁（某一个时间段，-只有一个线程能够进入该方法体内）"><a href="#synchronize-互斥锁（某一个时间段，-只有一个线程能够进入该方法体内）" class="headerlink" title="synchronize 互斥锁（某一个时间段， 只有一个线程能够进入该方法体内）"></a>synchronize 互斥锁（某一个时间段， 只有一个线程能够进入该方法体内）</h2><p>synchronize(this) 锁定当前对象， 即持有当前对象的锁对象。</p>
+<p>也可以给方法加 synchronize 关键字， 代表在执行方法的过程中， 锁定当前对象。</p>
+<p>sleep()方法， 睡眠过程中， 并不释放当前持有的锁。</p>
+<h2 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h2><p>最好只锁定一个， 不要锁定多个（粒度加粗）</p>
+<p>只读锁</p>
+<p>只写锁</p>
+<p>可重入锁</p>
+<h2 id="保护"><a href="#保护" class="headerlink" title="保护"></a>保护</h2><p>要保护好需要同步的对象， 需要对 <strong>访问该对象的所有方法</strong>  考虑  是否需要加入锁。</p>
+<h2 id="生产者和消费者"><a href="#生产者和消费者" class="headerlink" title="生产者和消费者"></a>生产者和消费者</h2>
       
     </div>
-    
-
-
 
     
+
     
     
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/07/Android/APK安装和卸载源码分析/" rel="next" title>
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/07/Android/LruCache/GitTest/" rel="prev" title>
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
   </div>
 
 
@@ -401,8 +495,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <div class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -484,6 +587,23 @@
         </div>
       </div>
 
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#线程同步"><span class="nav-number">1.</span> <span class="nav-text">线程同步</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#synchronize-互斥锁（某一个时间段，-只有一个线程能够进入该方法体内）"><span class="nav-number">1.1.</span> <span class="nav-text">synchronize 互斥锁（某一个时间段， 只有一个线程能够进入该方法体内）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#死锁"><span class="nav-number">1.2.</span> <span class="nav-text">死锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#保护"><span class="nav-number">1.3.</span> <span class="nav-text">保护</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生产者和消费者"><span class="nav-number">1.4.</span> <span class="nav-text">生产者和消费者</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
       
 
       

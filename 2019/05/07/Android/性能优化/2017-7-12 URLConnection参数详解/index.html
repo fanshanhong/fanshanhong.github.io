@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="1.URLConnection的对象问题 1234567URL url = new URL(&quot;http://localhost:8080/TestHttpURLConnectionPro/index.jsp&quot;); URLConnection urlConnection = url.openConnection();// 此处的urlConnection对象实际上是根据URL的 请求协议(此处是ht">
+<meta name="keywords" content="HttpUrlConnection">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2017-7-12 URLConnection参数详解">
+<meta property="og:url" content="http://yoursite.com/2019/05/07/Android/性能优化/2017-7-12 URLConnection参数详解/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="1.URLConnection的对象问题 1234567URL url = new URL(&quot;http://localhost:8080/TestHttpURLConnectionPro/index.jsp&quot;); URLConnection urlConnection = url.openConnection();// 此处的urlConnection对象实际上是根据URL的 请求协议(此处是ht">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-05-07T12:11:31.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="2017-7-12 URLConnection参数详解">
+<meta name="twitter:description" content="1.URLConnection的对象问题 1234567URL url = new URL(&quot;http://localhost:8080/TestHttpURLConnectionPro/index.jsp&quot;); URLConnection urlConnection = url.openConnection();// 此处的urlConnection对象实际上是根据URL的 请求协议(此处是ht">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2019/05/07/Android/性能优化/2017-7-12 URLConnection参数详解/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>2017-7-12 URLConnection参数详解 | Hexo</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/07/Android/性能优化/2017-7-12 URLConnection参数详解/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Fan shanhong">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">2017-7-12 URLConnection参数详解
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-05-07 20:11:31" itemprop="dateCreated datePublished" datetime="2019-05-07T20:11:31+08:00">2019-05-07</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="1-URLConnection的对象问题"><a href="#1-URLConnection的对象问题" class="headerlink" title="1.URLConnection的对象问题"></a>1.URLConnection的对象问题</h1><hr>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">URL url = <span class="keyword">new</span> URL(<span class="string">"http://localhost:8080/TestHttpURLConnectionPro/index.jsp"</span>); </span><br><span class="line"></span><br><span class="line">URLConnection urlConnection = url.openConnection();</span><br><span class="line"><span class="comment">// 此处的urlConnection对象实际上是根据URL的 请求协议(此处是http)生成的URLConnection类的子类HttpURLConnection</span></span><br><span class="line"><span class="comment">// 故此处最好将其转化 为HttpURLConnection类型的对象,以便用到 HttpURLConnection更多的API.如下: </span></span><br><span class="line"></span><br><span class="line">HttpURLConnection httpUrlConnection = (HttpURLConnection) urlConnection;</span><br></pre></td></tr></table></figure>
+<h1 id="2-HttpURLConnection对象参数问题"><a href="#2-HttpURLConnection对象参数问题" class="headerlink" title="2. HttpURLConnection对象参数问题"></a>2. HttpURLConnection对象参数问题</h1><hr>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 设置是否向httpUrlConnection输出，因为这个是post请求，参数要放在 </span></span><br><span class="line"><span class="comment">// http正文内，因此需要设为true, 默认情况下是false; </span></span><br><span class="line">httpUrlConnection.setDoOutput(<span class="keyword">true</span>); </span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置是否从httpUrlConnection读入，默认情况下是true; </span></span><br><span class="line">httpUrlConnection.setDoInput(<span class="keyword">true</span>); </span><br><span class="line"></span><br><span class="line"><span class="comment">// Post 请求不能使用缓存 </span></span><br><span class="line">httpUrlConnection.setUseCaches(<span class="keyword">false</span>); </span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用setRequestProperty可以设置一些属性， 比如头信息， 比如请求的方法</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 设定传送的内容类型是可序列化的java对象 </span></span><br><span class="line"><span class="comment">// (如果不设此项,在传送序列化对象时,当WEB服务默认的不是这种类型时可能抛java.io.EOFException) </span></span><br><span class="line">httpUrlConnection.setRequestProperty(<span class="string">"Content-type"</span>, <span class="string">"application/x-java-serialized-object"</span>); </span><br><span class="line"></span><br><span class="line"><span class="comment">// 设定请求的方法为"POST"，默认是GET </span></span><br><span class="line">httpUrlConnection.setRequestMethod(<span class="string">"POST"</span>); </span><br><span class="line"></span><br><span class="line"><span class="comment">// 连接，从上述第2条中url.openConnection()至此的配置必须要在connect之前完成， </span></span><br><span class="line"><span class="comment">// connect 是真正建立连接， 不过也只是建立连接， 不发送数据</span></span><br><span class="line">httpUrlConnection.connect();</span><br></pre></td></tr></table></figure>
+<h1 id="3-HttpUrlConnection-连接问题"><a href="#3-HttpUrlConnection-连接问题" class="headerlink" title="3.HttpUrlConnection 连接问题"></a>3.HttpUrlConnection 连接问题</h1><hr>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// 此处getOutputStream会隐含的进行connect</span></span><br><span class="line"><span class="comment">// 所以在开发中不调用上述的connect()也可以)</span></span><br><span class="line"><span class="comment">// 因为要向服务器发送数据， 肯定要在建立连接的基础上， 因此在getOutputStream方法内部会调用connect建立连接</span></span><br><span class="line">OutputStream outStrm = httpUrlConnection.getOutputStream();</span><br></pre></td></tr></table></figure>
+<h1 id="4-HttpURLConnection写数据与发送数据问题"><a href="#4-HttpURLConnection写数据与发送数据问题" class="headerlink" title="4.HttpURLConnection写数据与发送数据问题"></a>4.HttpURLConnection写数据与发送数据问题</h1><hr>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">OutputStream outStrm = httpUrlConnection.getOutputStream();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 现在通过输出流对象构建对象输出流对象，以实现输出可序列化的对象。 </span></span><br><span class="line">ObjectOutputStream objOutputStrm = <span class="keyword">new</span> ObjectOutputStream(outStrm); </span><br><span class="line"></span><br><span class="line"><span class="comment">// 向对象输出流写出数据，这些数据将存到内存缓冲区中 </span></span><br><span class="line">objOutputStrm.writeObject(<span class="keyword">new</span> String(<span class="string">"我是测试数据"</span>)); </span><br><span class="line"></span><br><span class="line"><span class="comment">// 刷新对象输出流，将任何字节都写入潜在的流中（此处为ObjectOutputStream） </span></span><br><span class="line">objOutputStm.flush(); </span><br><span class="line"></span><br><span class="line"><span class="comment">// 关闭流对象。此时，不能再向对象输出流写入任何数据，先前写入的数据存在于内存缓冲区中, </span></span><br><span class="line"><span class="comment">// 在调用下边的getInputStream()函数时才把准备好的http请求正式发送到服务器 </span></span><br><span class="line">objOutputStm.close(); </span><br><span class="line"></span><br><span class="line"><span class="comment">// 调用HttpURLConnection连接对象的getInputStream()函数, </span></span><br><span class="line"><span class="comment">// 将内存缓冲区中封装好的完整的HTTP请求报文发送到服务端。 </span></span><br><span class="line">InputStream inStrm = httpConn.getInputStream(); <span class="comment">// &lt;===注意，实际发送请求的代码段就在这里   </span></span><br><span class="line"><span class="comment">//  getInputStream方法内部也会调用connect， 因为有时候不需要向ouputStream中写入数据， 直接通过URL就可以带参数， 这时直接调用getInputStream就可以保证先建立连接， 然后发送请求， 并且获取返回数据</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 上边的httpConn.getInputStream()方法已调用,本次HTTP请求已结束,下边向对象输出流的写入数据已无意义， </span></span><br><span class="line"><span class="comment">// 既使对象输出流没有调用close()方法，下边的操作也不会向对象输出流写入任何数据. </span></span><br><span class="line"><span class="comment">// 因此，要重新发送数据时需要重新创建连接、重新设参数、重新创建流对象、重新写数据、 </span></span><br><span class="line"><span class="comment">// 重新发送数据(至于是否不用重新这些操作需要再研究) </span></span><br><span class="line">objOutputStm.writeObject(<span class="keyword">new</span> String(<span class="string">""</span>)); </span><br><span class="line">httpConn.getInputStream();</span><br></pre></td></tr></table></figure>
+<h1 id="5-超时设置"><a href="#5-超时设置" class="headerlink" title="5.超时设置"></a>5.超时设置</h1><hr>
+<p>HttpURLConnection是基于HTTP协议的，其底层通过socket通信实现。如果不设置超时（timeout），在网络异常的情况下，可能会导致程序僵死而不继续往下执行。可以通过以下两个语句来设置相应的超时：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">urlConn.setConnectTimeout(<span class="number">30000</span>); <span class="comment">// 连接超时</span></span><br><span class="line">urlConn.setReadTimeout(<span class="number">30000</span>); <span class="comment">// 读取超时</span></span><br></pre></td></tr></table></figure>
+<h1 id="6-总结"><a href="#6-总结" class="headerlink" title="6.总结"></a>6.总结</h1><hr>
+<ul>
+<li>HttpURLConnection的connect()函数，实际上只是建立了一个与服务器的tcp连接，并没有实际发送http请求。 无论是post还是get，http请求实际上直到HttpURLConnection的getInputStream()这个函数里面才正式发送出去。 </li>
+<li>在用POST方式发送URL请求时，URL请求参数的设定顺序是重中之重，对connection对象的一切配置（那一堆set函数）都必须要在connect()函数执行之前完成。<br>而对outputStream的写操作，又必须要在inputStream的读操作之前。这些顺序实际上是由http请求的格式决定的。<br>如果inputStream读操作在outputStream的写操作之前，会抛出异常：<br>java.net.ProtocolException: Cannot write output after reading input……. </li>
+<li>http请求实际上由两部分组成，<br> 一个是http头，所有关于此次http请求的配置都在http头里面定义，  一个是正文content（也就是body）。<br> connect()函数会根据HttpURLConnection对象的配置值生成http头部信息，因此在调用connect函数之前， 就必须把所有的配置准备好， 一般是调用setRequestProperty来设置Header信息。 </li>
+<li>在http头后面紧跟着的是http请求的正文（body），正文的内容是通过outputStream流写入的（先conn.getOutputStream获取到输出流， 然后向里面写入），<br>实际上outputStream不是一个网络流，充其量是个字符串流，往里面写入的东西不会立即发送到网络，  而是存在于内存缓冲区中，待outputStream流关闭时（调用close），根据输入的内容生成http正文（body）。<br>至此，http请求的东西已经全部准备就绪。在getInputStream()函数调用的时候，就会把准备好的http请求 正式发送到服务器了，然后返回一个输入流，用于读取服务器对于此次http请求的返回信息。<br>由于http请求在getInputStream的时候已经发送出去了（包括http头和正文），因此在getInputStream()函数 之后对connection对象进行设置（对http头的信息进行修改）或者写入outputStream（对正文进行修改） 都是没有意义的了，执行这些操作会导致异常发     生。 </li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/HttpUrlConnection/" rel="tag"># HttpUrlConnection</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/07/Android/LruCache/LruCache分析/" rel="next" title>
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/07/Android/并发/线程池/" rel="prev" title>
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Fan shanhong</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">21</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/fanshanhong" title="GitHub &rarr; https://github.com/fanshanhong" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-URLConnection的对象问题"><span class="nav-number">1.</span> <span class="nav-text">1.URLConnection的对象问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-HttpURLConnection对象参数问题"><span class="nav-number">2.</span> <span class="nav-text">2. HttpURLConnection对象参数问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-HttpUrlConnection-连接问题"><span class="nav-number">3.</span> <span class="nav-text">3.HttpUrlConnection 连接问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-HttpURLConnection写数据与发送数据问题"><span class="nav-number">4.</span> <span class="nav-text">4.HttpURLConnection写数据与发送数据问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-超时设置"><span class="nav-number">5.</span> <span class="nav-text">5.超时设置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-总结"><span class="nav-number">6.</span> <span class="nav-text">6.总结</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Fan shanhong</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.1.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
