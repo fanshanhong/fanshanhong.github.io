@@ -320,7 +320,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/07/Android/性能优化/2017-7-11 Android性能优化之被忽视的优化点/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/07/Android/并发/线程同步/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Fan shanhong">
@@ -340,7 +340,7 @@
           <h1 class="post-title" itemprop="name headline">
                 
                 
-                <a href="/2019/05/07/Android/性能优化/2017-7-11 Android性能优化之被忽视的优化点/" class="post-title-link" itemprop="url">2017-7-11 Android性能优化之被忽视的优化点</a>
+                <a href="/2019/05/07/Android/并发/线程同步/" class="post-title-link" itemprop="url">Untitled</a>
               
             
           </h1>
@@ -402,8 +402,15 @@
       
         
           
-            <p>欢迎使用 <strong>{小书匠}(xiaoshujiang)编辑器</strong>，您可以通过==设置==里的修改模板来改变新建文章的内容。</p>
-
+            <h1 id="线程同步"><a href="#线程同步" class="headerlink" title="线程同步"></a>线程同步</h1><h2 id="synchronize-互斥锁（某一个时间段，-只有一个线程能够进入该方法体内）"><a href="#synchronize-互斥锁（某一个时间段，-只有一个线程能够进入该方法体内）" class="headerlink" title="synchronize 互斥锁（某一个时间段， 只有一个线程能够进入该方法体内）"></a>synchronize 互斥锁（某一个时间段， 只有一个线程能够进入该方法体内）</h2><p>synchronize(this) 锁定当前对象， 即持有当前对象的锁对象。</p>
+<p>也可以给方法加 synchronize 关键字， 代表在执行方法的过程中， 锁定当前对象。</p>
+<p>sleep()方法， 睡眠过程中， 并不释放当前持有的锁。</p>
+<h2 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h2><p>最好只锁定一个， 不要锁定多个（粒度加粗）</p>
+<p>只读锁</p>
+<p>只写锁</p>
+<p>可重入锁</p>
+<h2 id="保护"><a href="#保护" class="headerlink" title="保护"></a>保护</h2><p>要保护好需要同步的对象， 需要对 <strong>访问该对象的所有方法</strong>  考虑  是否需要加入锁。</p>
+<h2 id="生产者和消费者"><a href="#生产者和消费者" class="headerlink" title="生产者和消费者"></a>生产者和消费者</h2>
           
         
       
