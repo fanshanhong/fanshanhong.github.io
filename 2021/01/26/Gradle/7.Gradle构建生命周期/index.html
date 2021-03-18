@@ -1,0 +1,378 @@
+<!DOCTYPE html><html data-theme="light"><head><meta name="generator" content="Hexo 3.8.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5"><title>Gradle构建生命周期 | Fan Blog</title><meta name="description" content="​"><meta name="keywords" content="Gradle"><meta name="author" content="Fan shanhong"><meta name="copyright" content="Fan shanhong"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/favicon.ico"><link rel="preconnect" href="//cdn.jsdelivr.net"><link rel="preconnect" href="https://fonts.googleapis.com" crossorigin><link rel="preconnect" href="//busuanzi.ibruce.info"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Gradle构建生命周期"><meta name="twitter:description" content="​"><meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/jerryc127/butterfly_cdn@2.1.0/top_img/default.png"><meta property="og:type" content="article"><meta property="og:title" content="Gradle构建生命周期"><meta property="og:url" content="http://yoursite.com/2021/01/26/Gradle/7.Gradle构建生命周期/"><meta property="og:site_name" content="Fan Blog"><meta property="og:description" content="​"><meta property="og:image" content="https://cdn.jsdelivr.net/gh/jerryc127/butterfly_cdn@2.1.0/top_img/default.png"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script src="https://cdn.jsdelivr.net/npm/js-cookie/dist/js.cookie.min.js"></script><script>const autoChangeMode = 'false'
+var t = Cookies.get("theme");
+if (autoChangeMode == '1'){
+const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
+const isLightMode = window.matchMedia("(prefers-color-scheme: light)").matches
+const isNotSpecified = window.matchMedia("(prefers-color-scheme: no-preference)").matches
+const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+if (t === undefined){
+  if (isLightMode) activateLightMode()
+  else if (isDarkMode) activateDarkMode()
+  else if (isNotSpecified || hasNoSupport){
+    console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+    now = new Date();
+    hour = now.getHours();
+    isNight = hour < 6 || hour >= 18
+    isNight ? activateDarkMode() : activateLightMode()
+}
+} else if (t == 'light') activateLightMode()
+else activateDarkMode()
+
+
+} else if (autoChangeMode == '2'){
+  now = new Date();
+  hour = now.getHours();
+  isNight = hour < 6 || hour >= 18
+  if(t === undefined) isNight? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode() 
+} else {
+  if ( t == 'dark' ) activateDarkMode()
+  else if ( t == 'light') activateLightMode()
+}
+
+function activateDarkMode(){
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+    document.querySelector('meta[name="theme-color"]').setAttribute('content','#000')
+  }
+}
+function activateLightMode(){
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+  document.querySelector('meta[name="theme-color"]').setAttribute('content','#fff')
+  }
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="canonical" href="http://yoursite.com/2021/01/26/Gradle/7.Gradle构建生命周期/"><link rel="prev" title="9.Gradle插件" href="http://yoursite.com/2021/01/28/Gradle/9.Gradle插件/"><link rel="next" title="8.【Android 修炼手册】Gradle 篇 -- Gradle 源码分析" href="http://yoursite.com/2021/01/26/Gradle/8.【Android 修炼手册】Gradle 篇 -- Gradle 源码分析/"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"cookieDomain":"https://xxx/","msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简"},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  bookmark: {
+    title: 'Snackbar.bookmark.title',
+    message_prev: 'Press',
+    message_next: 'to bookmark this page'
+  },
+  runtime_unit: 'days',
+  runtime: true,
+  copyright: undefined,
+  ClickShowText: undefined,
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: undefined,
+  baiduPush: false,
+  isHome: false,
+  isPost: true
+  
+}</script></head><body><header> <div id="page-header"><span class="pull_left" id="blog_name"><a class="blog_title" id="site-name" href="/">Fan Blog</a></span><span class="toggle-menu pull_right close"><a class="site-page"><i class="fa fa-bars fa-fw" aria-hidden="true"></i></a></span><span class="pull_right menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> About</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw fa fa-list" aria-hidden="true"></i><span> List</span><i class="fa fa-chevron-down menus-expand" aria-hidden="true"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fa fa-music"></i><span> Music</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fa fa-film"></i><span> Movie</span></a></li></ul></div></div></span></div></header><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">Articles</div><div class="length_num">142</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">Tags</div><div class="length_num">32</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">Categories</div><div class="length_num">29</div></a></div></div></div><hr><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> About</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw fa fa-list" aria-hidden="true"></i><span> List</span><i class="fa fa-chevron-down menus-expand" aria-hidden="true"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fa fa-music"></i><span> Music</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fa fa-film"></i><span> Movie</span></a></li></ul></div></div></div><div id="mobile-sidebar-toc"><div class="toc_mobile_headline">Catalog</div><div class="sidebar-toc__content"><ol class="toc_mobile_items"><li class="toc_mobile_items-item toc_mobile_items-level-1"><a class="toc_mobile_items-link" href="#Gradle-生命周期"><span class="toc_mobile_items-number">1.</span> <span class="toc_mobile_items-text">Gradle 生命周期</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-1"><a class="toc_mobile_items-link" href="#Project"><span class="toc_mobile_items-number">2.</span> <span class="toc_mobile_items-text">Project</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-1"><a class="toc_mobile_items-link" href="#Gradle"><span class="toc_mobile_items-number">3.</span> <span class="toc_mobile_items-text">Gradle</span></a></li></ol></div></div></div><div id="body-wrap"><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true">     </i><div class="auto_open" id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Gradle-生命周期"><span class="toc-number">1.</span> <span class="toc-text">Gradle 生命周期</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Project"><span class="toc-number">2.</span> <span class="toc-text">Project</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Gradle"><span class="toc-number">3.</span> <span class="toc-text">Gradle</span></a></li></ol></div></div></div><main id="content-outer"><div id="top-container" style="background-image: url(https://cdn.jsdelivr.net/gh/jerryc127/butterfly_cdn@2.1.0/top_img/default.png)"><div id="post-info"><div id="post-title"><div class="posttitle">Gradle构建生命周期</div></div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> Created 2021-01-26<span class="post-meta__separator">|</span><i class="fa fa-history fa-fw" aria-hidden="true"></i> Updated 2021-01-28</time><span class="post-meta__separator">|</span><span><i class="fa fa-inbox post-meta__icon fa-fw" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/Gradle/">Gradle</a></span><div class="post-meta-wordcount"><div class="post-meta-pv-cv"><span><i class="fa fa-eye post-meta__icon fa-fw" aria-hidden="true"> </i>Post View:</span><span id="busuanzi_value_page_pv"></span></div></div></div></div></div><div class="layout layout_post" id="content-inner">   <article id="post"><div class="article-container" id="post-content"><p>from：<br>作者：云飞扬1<br>链接：<a href="https://www.jianshu.com/p/2e19268bf387" target="_blank" rel="noopener">https://www.jianshu.com/p/2e19268bf387</a><br>来源：简书<br>著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</p>
+<!-- TOC -->
+<ul>
+<li><a href="#gradle-生命周期">Gradle 生命周期</a></li>
+<li><a href="#project">Project</a></li>
+<li><a href="#gradle">Gradle</a></li>
+</ul>
+<!-- /TOC -->
+<h1 id="Gradle-生命周期"><a href="#Gradle-生命周期" class="headerlink" title="Gradle 生命周期"></a>Gradle 生命周期</h1><p>gradle 构建分为三个阶段</p>
+<ul>
+<li><p>初始化阶段<br>初始化阶段主要做的事情是有哪些项目需要被构建，然后为对应的项目创建 Project 对象</p>
+</li>
+<li><p>配置阶段<br>配置阶段主要做的事情是对上一步创建的项目进行配置，这时候会执行 build.gradle 脚本，并且会生成要执行的 task</p>
+</li>
+<li><p>执行阶段<br>执行阶段主要做的事情就是执行 task，进行主要的构建工作</p>
+</li>
+</ul>
+<h1 id="Project"><a href="#Project" class="headerlink" title="Project"></a>Project</h1><div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">groovy</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//在 Project 进行配置前调用</span></span><br><span class="line"><span class="keyword">void</span> beforeEvaluate(Closure closure)</span><br><span class="line"><span class="comment">//在 Project 配置结束后调用</span></span><br><span class="line"><span class="keyword">void</span> afterEvaluate(Closure closure)</span><br></pre></td></tr></table></figure></div>
+<p>beforeEvaluate 必须在父模块的 build.gradle 对子模块进行配置才能生效，因为在当前模块的 build.gradle 中配置，它自己本身都没配置好，所以不会监听到。</p>
+<p>我们用个例子来验证下结果，工程结构如下图所示：</p>
+<p><a href="https://cdn.jsdelivr.net/gh/fanshanhong/note-image/project_lifecycle_demo.webp" data-fancybox="group" data-caption class="fancybox"><img src="https://cdn.jsdelivr.net/gh/fanshanhong/note-image/project_lifecycle_demo.webp" alt title></a></p>
+<p>settings.gradle 代码：<br><div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">groovy</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">include <span class="string">":app"</span></span><br></pre></td></tr></table></figure></div></p>
+<p>build.gradle:</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">groovy</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//对子模块进行配置</span></span><br><span class="line">subprojects &#123; sub -&gt;</span><br><span class="line">    sub.beforeEvaluate &#123; proj -&gt;</span><br><span class="line">        println <span class="string">"子项目beforeEvaluate回调..."</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">println <span class="string">"根项目配置开始---"</span></span><br><span class="line"></span><br><span class="line">task rootTest &#123;</span><br><span class="line">    println <span class="string">"根项目里任务配置---"</span></span><br><span class="line">    doLast &#123;</span><br><span class="line">        println <span class="string">"执行根项目任务..."</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">println <span class="string">"根项目配置结束---"</span></span><br></pre></td></tr></table></figure></div>
+<p>app/build.gradle<br><div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">groovy</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">println <span class="string">"APP子项目配置开始---"</span></span><br><span class="line"></span><br><span class="line">afterEvaluate &#123;</span><br><span class="line">    println <span class="string">"APP子项目afterEvaluate回调..."</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">task appTest &#123;</span><br><span class="line">    println <span class="string">"APP子项目里任务配置---"</span></span><br><span class="line">    doLast &#123;</span><br><span class="line">        println <span class="string">"执行子项目任务..."</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">println <span class="string">"APP子项目配置结束---"</span></span><br></pre></td></tr></table></figure></div></p>
+<p>在根目录执行：gradle -q，结果如下：</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">shell</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">根项目配置开始---</span><br><span class="line">根项目里任务配置---</span><br><span class="line">根项目配置结束---</span><br><span class="line">子项目beforeEvaluate回调...</span><br><span class="line">APP子项目配置开始---</span><br><span class="line">APP子项目里任务配置---</span><br><span class="line">APP子项目配置结束---</span><br><span class="line">APP子项目afterEvaluate回调...</span><br></pre></td></tr></table></figure></div>
+<p>根据这个顺序，我感觉能明确几点：</p>
+<ol>
+<li>先配置根项目，根项目配置完成后，才开始配置子项目</li>
+<li>配置代码的执行顺序是自上而下顺序执行的。 包括任务中的配置代码，也是这个顺序。</li>
+<li>子项目配置之前，会回调beforeEvaluate方法。子项目配置完成之后，会回调afterEvaluate方法。</li>
+</ol>
+<h1 id="Gradle"><a href="#Gradle" class="headerlink" title="Gradle"></a>Gradle</h1><p>Gradle 提供的生命周期回调方法很多。</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">groovy</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//构建开始前调用。这个回调一般不会调用，因为我们注册的时机太晚，注册的时候构建已经开始了，是 gradle 内部使用的</span></span><br><span class="line"><span class="keyword">void</span> buildStarted(Closure closure)   </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 初始化阶段</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//settings.gradle解析完成的监听，只对settings.gradle设置生效</span></span><br><span class="line"><span class="keyword">void</span> settingsEvaluated(Closure closure)</span><br><span class="line"></span><br><span class="line"><span class="comment">//当settings.gradle中引入的所有project都被创建好后调用，只在settings.gradle文件设置才会生效</span></span><br><span class="line"><span class="keyword">void</span> projectsLoaded(Closure closure)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 配置阶段</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//表示对每一个 project 在执行配置代码之前都会回调这个方法。child project必须在root project中设置才会生效，root project必须在settings.gradle中设置才会生效</span></span><br><span class="line"><span class="keyword">void</span> beforeProject(Closure closure)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 当前 project在解析之前的回调。这个方法同 beforeProject 差不多。一个是project的方法，一个是gradle的方法。不要去纠结这两个方法，我纠结了半天，发现没啥用。这两个方法就是在project执行配置之前执行的回调方法，仅此而已。我为了区分，用了两个不同的词：解析和配置。其实真没啥区别。</span></span><br><span class="line"><span class="keyword">void</span> project.beforeEvaluate()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 注意：如果同时写了beforeProject 和  beforeEvaluate，先执行beforeProject </span></span><br><span class="line"></span><br><span class="line"><span class="comment">//在project配置后调用</span></span><br><span class="line"><span class="keyword">void</span> afterProject(Closure closure)</span><br><span class="line"></span><br><span class="line"><span class="comment">//在project解析后调用</span></span><br><span class="line"><span class="keyword">void</span> project.afterEvaluate()</span><br><span class="line"></span><br><span class="line"><span class="comment">//所有project配置完成后调用</span></span><br><span class="line"><span class="keyword">void</span> projectsEvaluated(Closure closure)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// Gradle 执行阶段时机</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 每一个 Task 任务执行之前回调</span></span><br><span class="line"><span class="keyword">void</span> beforeTask(Closure closure)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 每一个 task 执行之后被回调</span></span><br><span class="line"><span class="keyword">void</span> afterTask​(Closure closure)</span><br><span class="line"></span><br><span class="line"><span class="comment">//任务准备好后调用</span></span><br><span class="line"><span class="keyword">void</span> whenReady(Closure closure)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// Gradle执行阶段完成</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//整个构建结束后调用</span></span><br><span class="line"><span class="keyword">void</span> buildFinished(Closure closure)</span><br></pre></td></tr></table></figure></div>
+<p>Gradle 在配置完成后，会对所有的 task 生成一个有向无环图，这里叫做 task 执行图，他们决定了 task 的执行顺序等。同样，Gradle 可以对 task 的执行生命周期进行监听。<br><div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">groovy</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//任务执行前掉用</span></span><br><span class="line"><span class="keyword">void</span> afterTask​(Closure closure)</span><br><span class="line"><span class="comment">//任务执行后调用</span></span><br><span class="line"><span class="keyword">void</span> beforeTask(Closure closure)</span><br><span class="line"><span class="comment">//任务准备好后调用</span></span><br><span class="line"><span class="keyword">void</span> whenReady(Closure closure)</span><br></pre></td></tr></table></figure></div></p>
+<p>通过 gradle.getTaskGraph() 方法来获取 task 执行图：</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">groovy</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">TaskExecutionGraph taskGraph = gradle.getTaskGraph()</span><br><span class="line">taskGraph.whenReady &#123;</span><br><span class="line">    println <span class="string">"task whenReady"</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">taskGraph.beforeTask &#123; Task task -&gt;</span><br><span class="line">    println <span class="string">"任务名称：$&#123;task.name&#125; beforeTask"</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">taskGraph.afterTask &#123; Task task -&gt;</span><br><span class="line">    println <span class="string">"任务名称：$&#123;task.name&#125; afterTask"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>我们修改 setting.gradle 的代码如下：</p>
+<div class="code-area-wrap"><div class="highlight-tools"><i class="fa fa-angle-down code-expand" aria-hidden="true"></i><div class="code_lang">groovy</div><div class="copy-notice"></div><i class="fa fa-clipboard" aria-hidden="true"></i></div><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">gradle.settingsEvaluated &#123;</span><br><span class="line">    println <span class="string">"settings：执行settingsEvaluated..."</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">gradle.projectsLoaded &#123;</span><br><span class="line">    println <span class="string">"settings：执行projectsLoaded..."</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">gradle.projectsEvaluated &#123;</span><br><span class="line">    println <span class="string">"settings: 执行projectsEvaluated..."</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">gradle.beforeProject &#123; proj -&gt;</span><br><span class="line">    println <span class="string">"settings：执行$&#123;proj.name&#125; beforeProject"</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">gradle.afterProject &#123; proj -&gt;</span><br><span class="line">    println <span class="string">"settings：执行$&#123;proj.name&#125; afterProject"</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">gradle.buildStarted &#123;</span><br><span class="line">    println <span class="string">"构建开始=======..."</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">gradle.buildFinished &#123;</span><br><span class="line">    println <span class="string">"构建结束..."</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">include <span class="string">":app"</span></span><br></pre></td></tr></table></figure></div>
+<p>这个时候的执行： <code>gradlew -i</code></p>
+<p><a href="https://cdn.jsdelivr.net/gh/fanshanhong/note-image/gradle_lifecycle_i3.png" data-fancybox="group" data-caption class="fancybox"><img src="https://cdn.jsdelivr.net/gh/fanshanhong/note-image/gradle_lifecycle_i3.png" alt title></a></p>
+<p>如果想要更详细的输出： <code>gradlew -d</code><br>输出特别多。我们先看<code>gradlew -i</code>的结果</p>
+<ol>
+<li>首先是初始化阶段。第一行就提示初始化阶段<code>Initialized native services in: /Users/shanhongfan/.gradle/native</code>。</li>
+<li>然后打印出 <code>Starting Build</code> 。这个提示构建已经开始了。那我们注册操作<code>gradle.buildStarted</code>其实是和打印setting.gradle文件中写的<code>=======lifecycle</code> 一起执行的，因此我们注册太晚了，注册的时候构建已经开始了，因此，我们注册在 <code>gradle.buildStarted</code> 方法里的东西不会执行。</li>
+</ol>
+<p>初始化阶段会解析<code>settings.gradle</code>文件，来分析哪些项目参与构建。在 <code>settings.gradle</code> 中读取需要参与构建的 project ，并且创建好对应的 project 实例了。这些都是在初始化阶段做的。注意：在初始化阶段只会执行这一个文件。写在RootProject和ChildProject的<code>build.gradle</code>中的代码是不会被执行的。</p>
+<ol start="3">
+<li>buildStarted 之后，就开始解析 <code>settings.gradle</code> 。开始解析<code>settings.gradle</code>的提示，在gradlew -i的命令中没打印。在gradlew -d命令中会打印，等下看一下。</li>
+<li>解析也就是执行的过程，打印了我们在setting.gradle文件中写的<code>=======lifecycle</code>。</li>
+<li>然后提示解析完成了。用了我们的那个settings.gradle文件。settings.gradle文件解析完成后就回调 settingsEvaluated方法</li>
+<li>接下来，Gradle 会从 setting.gradle 文件获取该项目包含几个子项目，然后创建一个 RootProject 以及分别为子项目创建 Project 实例。我们这个例子就是一个RootProject（lifecycle）和一个子项目（app）。提示中可以看到，RootProject用的build 文件是我们根目录下的build.gradle。包含的project有：root（lifecycle）和app</li>
+<li>当所有的project都创建好后，会回调<code>projectsLoaded</code>方法。<code>只在settings.build文件设置才会生效</code> 是因为初始化阶段，只会读 setting.gradle文件。你写在其他文件里又读不到，肯定不生效。</li>
+</ol>
+<p>到这里，初始化阶段就结束了。下面是配置阶段。</p>
+<p>配置阶段就是执行每一个 Project 对应的 build.gradle 的配置代码。先执行RootProject的，在执行ChildProject的。这个要明确。</p>
+<ol start="8">
+<li>提示：开始配置 root project了。如果我们在settings.gradle 中监听了 beforeProject 或者 beforeEvaluate，这里会先执行回调的。我们这里没监听。</li>
+<li>由于代码是自上而下执行，因此执行了subprojects中的配置代码</li>
+<li>然后输出<code>根项目配置开始---</code></li>
+<li>由于代码是自上而下执行，输出Task中的配置代码</li>
+<li>然后执行allprojects中的配置代码</li>
+<li>根项目配置结束—</li>
+</ol>
+<p>RootProject配置完了，下面是ChildProject（app）的配置</p>
+<ol start="11">
+<li>由于在 setting.gradle 中配置了 beforeProject。同时在RootProject中配置了 beforeEvaluate。因此，先执行了 beforeProject 回调，又执行了 beforeEvaluate 回调。</li>
+<li>回调都执行完，开始执行project配置代码。<code>APP子项目配置开始---</code></li>
+<li>配置代码中，获取了一下之前设置的全局参数，这没啥，我只是测试一下。</li>
+<li>顺序执行，Task的配置代码</li>
+<li>配置结束</li>
+<li>project配置之后，先执行afterProject，再执行afterEvaluate</li>
+<li><p>提示 <code>All projects evaluated.</code> </p>
+</li>
+<li><p>到这里，所有的Project的配置都结束了，回调 <code>projectsEvaluated</code>。</p>
+</li>
+<li>然后选择了我们要执行的任务：appTest，并将它启动。</li>
+</ol>
+<p>配置阶段结束</p>
+<ol start="19">
+<li><p>最后，是执行阶段。执行了appTest这个任务</p>
+</li>
+<li><p>执行完成后，回调 buildFinished</p>
+</li>
+</ol>
+<p>这就是所有的流程。</p>
+<p>也可以看更详细的日志输出， <code>gradlew -d</code> 可以更好的理解，但是实在太多了。</p>
+<p>说几个重要的。<br><a href="https://cdn.jsdelivr.net/gh/fanshanhong/note-image/gradlew_lifecycler-d1.png" data-fancybox="group" data-caption class="fancybox"><img src="https://cdn.jsdelivr.net/gh/fanshanhong/note-image/gradlew_lifecycler-d1.png" alt title></a></p>
+<ul>
+<li><ol>
+<li>开始构建。</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>输出了 GRADLE_USER_HOME 这个变量</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>输出当前路径</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>加载init.gradle文件。这个文件是在  GRADLE_USER_HOME这个目录下的。我的是：/User/xxx/.gradle/ 目录下。这个脚本会在每个项目 build 之前先被调用，可以在其中做一些整体的初始化操作，比如配置 log 输出等等。</li>
+</ol>
+</li>
+<li>4.5.6.  一个操作，它总是经历 开始（started）、执行操作、completing（正在完成）、Completed（完成） 这几个阶段。</li>
+<li><ol start="7">
+<li>开始（started）使用 settings.gradle文件去设置我们的lifecycle</li>
+</ol>
+</li>
+<li><ol start="8">
+<li>就是执行操作的过程</li>
+</ol>
+</li>
+<li><ol start="9">
+<li>completing（正在完成）、Completed（完成）。到这里就是解析（执行）settings.gradle文件完成。</li>
+</ol>
+</li>
+<li><ol start="10">
+<li>计算了一下解析setting.gradle文件的耗时</li>
+</ol>
+</li>
+<li><ol start="11">
+<li>INFO 就是我们-i打印的输出了</li>
+</ol>
+</li>
+<li><ol start="12">
+<li>回调解析完成的方法 settingsEvaluated</li>
+</ol>
+</li>
+</ul>
+<p>正常来讲，后面应该是创建Project对象，然后回调projectLoaded方法了。</p>
+<p><a href="https://cdn.jsdelivr.net/gh/fanshanhong/note-image/gradle_lifecycle_d3.png" data-fancybox="group" data-caption class="fancybox"><img src="https://cdn.jsdelivr.net/gh/fanshanhong/note-image/gradle_lifecycle_d3.png" alt title></a></p>
+<ul>
+<li><ol start="13">
+<li>从项目根目录下查找 gradle.properties。这个文件主要是做一些全局的配置。我们没有。</li>
+</ol>
+</li>
+<li><ol start="14">
+<li>从ChildProject（app）下去找，我们还没有。</li>
+</ol>
+</li>
+<li><ol start="15">
+<li>提示： 开始去调用projectsLoaded方法了。但是这时还没调用</li>
+</ol>
+</li>
+<li><ol start="16">
+<li>所有的project创建完成了应该。</li>
+</ol>
+</li>
+<li><ol start="17">
+<li>打印出提示信息，都包含哪些project</li>
+</ol>
+</li>
+<li><ol start="18">
+<li>执行 rootProject{} 配置开始</li>
+</ol>
+</li>
+<li><ol start="19">
+<li>执行 Gradle.allprojects listener 监听、allprojects{} 配置开始</li>
+</ol>
+</li>
+</ul>
+<p>如果我们在 gradle.properties里写了println语句。应该是在projectsLoaded之前，<code>Included projects: [root project &#39;lifecycle&#39;, project &#39;:app&#39;]</code> 之后打印。</p>
+<p>如果我们在 settings.gradle 中配置 allprojects gradle.allprojects 这些，在何时执行。</p>
+<p><a href="https://cdn.jsdelivr.net/gh/fanshanhong/note-image/gradle_lifecycle_d4.png" data-fancybox="group" data-caption class="fancybox"><img src="https://cdn.jsdelivr.net/gh/fanshanhong/note-image/gradle_lifecycle_d4.png" alt title></a></p>
+<ul>
+<li><ol start="20">
+<li>allprojects{} completing completed</li>
+</ol>
+</li>
+<li><ol start="21">
+<li>Gradle.allprojects listener监听， completing 和 completed</li>
+</ol>
+</li>
+<li>然后还有个rootProject{} completing 和 completed</li>
+<li><ol start="22">
+<li>执行 Gradle.projectsLoaded listener开始（listener才是我们写的回调方法）</li>
+</ol>
+</li>
+<li><ol start="23">
+<li>回调我们的<code>projectsLoaded</code>方法</li>
+</ol>
+</li>
+<li><ol start="24">
+<li>Gradle.projectsLoaded listener completing</li>
+</ol>
+</li>
+<li><ol start="25">
+<li>Gradle.projectsLoaded listener completed</li>
+</ol>
+</li>
+<li><ol start="26">
+<li>明确提示，进入配置阶段</li>
+</ol>
+</li>
+</ul>
+<p>下面这个图看一下从配置完成到任务执行阶段过渡<br><a href="https://cdn.jsdelivr.net/gh/fanshanhong/note-image/gradle_lifecycle_.png" data-fancybox="group" data-caption class="fancybox"><img src="https://cdn.jsdelivr.net/gh/fanshanhong/note-image/gradle_lifecycle_.png" alt title></a></p>
+<ul>
+<li><ol start="27">
+<li>提示所有的project都配置完成</li>
+</ol>
+</li>
+<li><ol start="28">
+<li>开始执行 Gradle.projectsEvaluated Listener，也就是我们的gradle.projectsEvaluated回调方法</li>
+</ol>
+</li>
+<li><ol start="29">
+<li>执行了我们的回调方法，打印一行</li>
+</ol>
+</li>
+<li><ol start="30">
+<li>completing</li>
+</ol>
+</li>
+<li><ol start="31">
+<li>completed</li>
+</ol>
+</li>
+<li><ol start="32">
+<li>说开始计算 TaskGraph 了。可见，生成TaskGraph是在所有的project配置完成后，在执行阶段之前进行的。</li>
+</ol>
+</li>
+<li><ol start="33">
+<li>然后选择主要任务，也就是我们想要执行的 appTest 任务。这个主要任务是相对于依赖任务而言的。</li>
+</ol>
+</li>
+<li><ol start="34">
+<li>计算 TaskGraph completing</li>
+</ol>
+</li>
+<li><ol start="35">
+<li>计算 TaskGraph completed。这里就是分析好了Task的依赖关系，比如 dependsOn mustrunafter之类的。</li>
+</ol>
+</li>
+<li><ol start="36">
+<li>开始通知 whenReady 监听器</li>
+</ol>
+</li>
+<li><ol start="37">
+<li>appTest任务将要执行</li>
+</ol>
+</li>
+<li><ol start="38">
+<li>开始执行 TaskExecutionGraph.whenReady操作，也就是我们之前写好的<code>taskGraph.whenReady</code></li>
+</ol>
+</li>
+<li><ol start="39">
+<li>执行<code>taskGraph.whenReady</code>打印语句。到这里，task 的依赖图构建完成</li>
+</ol>
+</li>
+<li><ol start="40">
+<li>执行<code>taskGraph.whenReady</code>completing</li>
+</ol>
+</li>
+<li><ol start="41">
+<li>执行<code>taskGraph.whenReady</code>completed。到这个时候，task 的依赖图构建完成</li>
+</ol>
+</li>
+<li><ol start="42">
+<li>提示： 使用8个并行执行线程。给我们的任务分配了8个线程来执行啊。</li>
+</ol>
+</li>
+<li><ol start="43">
+<li>提示进入执行阶段</li>
+</ol>
+</li>
+<li><ol start="44">
+<li>开始执行任务：appTest</li>
+</ol>
+</li>
+<li><ol start="45">
+<li>执行之前，先回调 beforeTask 方法，打印一行。</li>
+</ol>
+</li>
+<li><ol start="46">
+<li>开始执行任务的 doLast 方法</li>
+</ol>
+</li>
+<li><ol start="47">
+<li>执行doLast打印语句</li>
+</ol>
+</li>
+<li><ol start="48">
+<li>doLast completing</li>
+</ol>
+</li>
+<li><ol start="49">
+<li>doLast completed</li>
+</ol>
+</li>
+<li><ol start="50">
+<li>doLast执行完之后，回调 afterTask方法</li>
+</ol>
+</li>
+<li><ol start="51">
+<li>然后是 44 的  completing 和 completed。</li>
+</ol>
+</li>
+</ul>
+<p>最后会回调 buildFinished。 就全部结束了。</p>
+<p>除此之外，Gradle 还有一个通用的设置生命周期监听器的方法：addListener</p>
+<p><a href="https://cdn.jsdelivr.net/gh/fanshanhong/note-image/gradle_add_listener.webp" data-fancybox="group" data-caption class="fancybox"><img src="https://cdn.jsdelivr.net/gh/fanshanhong/note-image/gradle_add_listener.webp" alt title></a></p>
+<p>看完Gradle构建的生命周期，再看一下源码分析，就豁然开朗了</p>
+<p><a href="https://zhuanlan.zhihu.com/p/67842670" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/67842670</a></p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined">Fan shanhong</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://yoursite.com/2021/01/26/Gradle/7.Gradle构建生命周期/">http://yoursite.com/2021/01/26/Gradle/7.Gradle构建生命周期/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Gradle/">Gradle    </a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/gh/jerryc127/butterfly_cdn@2.1.0/top_img/default.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><div class="post-reward"><a class="reward-button button--primary button--animated"> <i class="fa fa-qrcode"></i> Donate<div class="reward-main"><ul class="reward-all"><li class="reward-item"><img class="lazyload post-qr-code__img" src="/img/wechat.jpg" alt="微信"><div class="post-qr-code__desc">微信</div></li><li class="reward-item"><img class="lazyload post-qr-code__img" src="/img/alipay.jpg" alt="支付寶"><div class="post-qr-code__desc">支付寶</div></li></ul></div></a></div><nav class="pagination_post" id="pagination"><div class="prev-post pull_left"><a href="/2021/01/28/Gradle/9.Gradle插件/"><img class="prev_cover lazyload" data-src="https://cdn.jsdelivr.net/gh/jerryc127/butterfly_cdn@2.1.0/top_img/default.png" onerror="onerror=null;src='/img/404.jpg'"><div class="label">Previous Post</div><div class="prev_info"><span>9.Gradle插件</span></div></a></div><div class="next-post pull_right"><a href="/2021/01/26/Gradle/8.【Android 修炼手册】Gradle 篇 -- Gradle 源码分析/"><img class="next_cover lazyload" data-src="https://cdn.jsdelivr.net/gh/jerryc127/butterfly_cdn@2.1.0/top_img/default.png" onerror="onerror=null;src='/img/404.jpg'"><div class="label">Next Post</div><div class="next_info"><span>8.【Android 修炼手册】Gradle 篇 -- Gradle 源码分析</span></div></a></div></nav><div class="relatedPosts"><div class="relatedPosts_headline"><i class="fa fa-fw fa-thumbs-up" aria-hidden="true"></i><span> Recommend</span></div><div class="relatedPosts_list"><div class="relatedPosts_item"><a href="/2021/01/28/Gradle/9.Gradle插件/" title="9.Gradle插件"><img class="relatedPosts_cover lazyload" data-src="https://cdn.jsdelivr.net/gh/jerryc127/butterfly_cdn@2.1.0/top_img/default.png"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2021-01-28</div><div class="relatedPosts_title">9.Gradle插件</div></div></a></div><div class="relatedPosts_item"><a href="/2021/01/28/Gradle/10.Java Gradle插件/" title="10.Java Gradle插件"><img class="relatedPosts_cover lazyload" data-src="https://cdn.jsdelivr.net/gh/jerryc127/butterfly_cdn@2.1.0/top_img/default.png"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2021-01-28</div><div class="relatedPosts_title">10.Java Gradle插件</div></div></a></div><div class="relatedPosts_item"><a href="/2021/01/23/Gradle/1.Gradle入门/" title="Gradle入门"><img class="relatedPosts_cover lazyload" data-src="https://cdn.jsdelivr.net/gh/jerryc127/butterfly_cdn@2.1.0/top_img/default.png"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2021-01-23</div><div class="relatedPosts_title">Gradle入门</div></div></a></div><div class="relatedPosts_item"><a href="/2021/02/01/Gradle/12.相关问题总结/" title="12.相关问题总结"><img class="relatedPosts_cover lazyload" data-src="https://cdn.jsdelivr.net/gh/jerryc127/butterfly_cdn@2.1.0/top_img/default.png"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2021-02-01</div><div class="relatedPosts_title">12.相关问题总结</div></div></a></div><div class="relatedPosts_item"><a href="/2021/01/23/Gradle/5. Extension详解/" title="Extension详解"><img class="relatedPosts_cover lazyload" data-src="https://cdn.jsdelivr.net/gh/jerryc127/butterfly_cdn@2.1.0/top_img/default.png"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2021-01-23</div><div class="relatedPosts_title">Extension详解</div></div></a></div><div class="relatedPosts_item"><a href="/2021/01/23/Gradle/6. NamedDomainObjectContainer详解/" title="NamedDomainObjectContainer详解"><img class="relatedPosts_cover lazyload" data-src="https://cdn.jsdelivr.net/gh/jerryc127/butterfly_cdn@2.1.0/top_img/default.png"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2021-01-23</div><div class="relatedPosts_title">NamedDomainObjectContainer详解</div></div></a></div></div><div class="clear_both"></div></div></div></main><footer id="footer" data-type="color"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2021 By Fan shanhong</div><div class="framework-info"><span>Driven </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme </span><a href="https://github.com/jerryc127/hexo-theme-butterfly"><span>Butterfly</span></a></div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><i class="fa fa-book" id="readmode" title="Read Mode"></i><i class="fa fa-plus" id="font_plus" title="Increase font size"></i><i class="fa fa-minus" id="font_minus" title="Decrease font size"></i><a class="translate_chn_to_cht" id="translateLink" href="javascript:translatePage();" title="Traditional Chinese and Simplified Chinese Conversion" target="_self">繁</a><i class="darkmode fa fa-moon-o" id="darkmode" title="Dark Mode"></i></div><div id="rightside-config-show"><div id="rightside_config" title="Setting"><i class="fa fa-cog" aria-hidden="true"></i></div><i class="fa fa-list-ul close" id="mobile-toc-button" title="Table of Contents" aria-hidden="true"></i><i class="fa fa-arrow-up" id="go-up" title="Back to top" aria-hidden="true"></i></div></section><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page@latest/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/lazysizes@latest/lazysizes.min.js" async></script></body></html>
